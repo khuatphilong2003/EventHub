@@ -1,36 +1,61 @@
-import React, {useEffect, useState} from 'react';
-import { WelcomeScreen } from './type';
+import React, {useCallback, useEffect, useState} from 'react';
+import {WelcomeScreen} from './type';
 import AppNavigator from './AppNavigator';
-import { Theme, DarkTheme, DefaultTheme,NavigationContainer } from '@react-navigation/native';
-import { darkMode } from '@/utils/colors';
+import {
+  Theme,
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
+import {darkMode} from '@/utils/colors';
+import {useAsyncStorage} from '@react-native-async-storage/async-storage';
+import AuthNavigator from './AuthNavigator';
 
-
-interface DataProps{
-  isDarkMode:boolean
+interface DataProps {
+  isDarkMode: boolean;
 }
 
-const Navigator:React.FC<DataProps> = ({isDarkMode}) => {
+const Navigator: React.FC<DataProps> = ({isDarkMode}) => {
+  const [isShowWelcome, setIsShowWelcome] = useState<boolean>(true);
+  const [accessToken, setAccessToken] = useState('');
+  const {getItem, setItem} = useAsyncStorage('assetToken');
   // Create custom dark theme
   const CustomDarkTheme: Theme = {
     ...DarkTheme,
-    dark:true,
-    colors:{
+    dark: true,
+    colors: {
       ...DarkTheme.colors,
-      primary:'white',
-      background:darkMode.main,
-      card:darkMode.main
-    }
-  }
+      primary: 'white',
+      background: darkMode.main,
+      card: darkMode.main,
+    },
+  };
+  
 
-  const [isWelcome, setIsWelcome] = useState(true);
-  useEffect(() => {  
-    setTimeout(() => {
-      setIsWelcome(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsShowWelcome(false);
     }, 3000);
-  }, [isWelcome]);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(()=>{
+    checkLogin();
+  },[])
+
+
+
+  const checkLogin = useCallback(async()=>{
+      const token = await getItem()
+      console.log(token);
+
+      token && setAccessToken(token)
+      
+  },[])
+
   return (
-    <NavigationContainer theme={isDarkMode?CustomDarkTheme:DefaultTheme}>
-      {isWelcome ? <WelcomeScreen /> : <AppNavigator />}
+    <NavigationContainer theme={isDarkMode ? CustomDarkTheme : DefaultTheme}>
+      {isShowWelcome ? <WelcomeScreen /> : accessToken? <AppNavigator />:<AuthNavigator/>}
     </NavigationContainer>
   );
 };

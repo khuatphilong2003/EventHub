@@ -4,6 +4,7 @@ import HomeScreen from '@/screens/home-screen/HomeScreen';
 import EventScreen from '@/screens/event-screen/EventScreen';
 import MapScreen from '@/screens/map-screen/MapScreen';
 import ProfileScreen from '@/screens/profile-screen/ProfileScreen';
+import Onbroading from '@/screens/auth/OnbroadingScreen'
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -14,6 +15,7 @@ export {
   EventScreen,
   MapScreen,
   ProfileScreen,
+  Onbroading
 };
 
 export type AuthStackParamList = {
@@ -21,6 +23,7 @@ export type AuthStackParamList = {
   RessetPasswordScreen: undefined;
   VerificationScreen: undefined;
   SigninScreen: undefined;
+  OnbroadingScreen: undefined
 };
 
 export type RootBottomStackParamList = {
